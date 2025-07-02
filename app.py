@@ -231,7 +231,7 @@ if st.session_state.get("do_reset", False):
 # === Page Functions ===
 def show_choose_page():
     # Title
-    st.markdown("<h1 style='font-weight: 700; text-align:center;'>🎵 Mini Shazam</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='font-weight: 700; text-align:center;'>🎵 Classroom Shazam</h1>", unsafe_allow_html=True)
     st.markdown("<div style='font-size:1.22em; text-align:center;'>Identify a song by recording or uploading!<br>Get lyrics, see its audio fingerprint, and more.</div>", unsafe_allow_html=True)
 
     # Vinyl GIF
