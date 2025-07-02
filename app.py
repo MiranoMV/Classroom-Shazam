@@ -43,55 +43,90 @@ def parse_offset(db_offset):
     raise ValueError(f"Unknown offset type: {type(db_offset)} - {db_offset}")
 
 def recognize(query_path, db_file=DB_FILE, show_benchmark=True):
+    # Start a timer to see how long the whole process takes (optional, for benchmarking)
     t0 = time.perf_counter()
+    
+    # Load the audio file that we want to recognize.
+    # y = the audio data (like a long list of sound numbers), sr = sample rate (how many samples per second)
     y, sr = librosa.load(query_path, sr=None, mono=True)
+    
+    # Preprocess the audio to make it easier to analyze (clean up, normalize, etc.)
     y, sr = preprocess_audio(y, sr)
+    
+    # Find the most important frequency peaks in the audio. Peaks are like unique "sound events" in a song.
     peaks = get_peaks(y, sr)
+    
+    # Convert those peaks into fingerprints (unique codes that represent moments in the song).
     fingerprints = generate_fingerprints(peaks)
+    
+    # If no fingerprints could be created (maybe the audio is empty or too noisy), return nothing.
     if not fingerprints:
         # Let the caller (page) display info; just return None
         return None, None
+    
+    # Make a dictionary to store, for each fingerprint hash, all the times (when it happens in the recording).
     hash_to_times = {}
     for h, t in fingerprints:
+        # If the hash is in bytes, decode it into a regular string (easier for the database)
         if isinstance(h, bytes):
             h = h.decode("utf-8")
+        # Store each time t for the same hash h (one hash may occur at different times)
         hash_to_times.setdefault(h, []).append(t)
+    # Get a list of all the unique hashes we found in our audio snippet
     hashes = list(hash_to_times.keys())
 
+    # This Counter will count how often a (song, offset) pairing occurs during the match
     offset_counter = Counter()
-    BATCH = 900
+    BATCH = 900  # How many hashes to search at once (avoid asking the database for too much at a time)
+    
+    # Open a connection to the database where all song fingerprints are stored
     conn = sqlite3.connect(db_file)
     c = conn.cursor()
+    
+    # Make sure the database has an index on the hash column for fast searching
     c.execute("CREATE INDEX IF NOT EXISTS idx_hash ON fingerprints(hash)")
-    t_db = time.perf_counter()
+    t_db = time.perf_counter()  # Optional: checkpoint to see how long loading DB takes
 
+    # Search the database in chunks ("batches") to be more efficient
     for i in range(0, len(hashes), BATCH):
+        # Take a slice of hashes for this batch
         batch_hashes = hashes[i:i+BATCH]
+        # Make the right number of question marks for SQL (so we can use ? placeholders)
         placeholders = ",".join("?" for _ in batch_hashes)
+        # Search the database: find all fingerprints whose hash is in our batch
         c.execute(
             f"SELECT hash, song_id, offset FROM fingerprints WHERE hash IN ({placeholders})",
             batch_hashes
         )
+        # For each match we found in the database...
         for db_hash, song_id, db_offset in c.fetchall():
-            db_offset = parse_offset(db_offset)
+            db_offset = parse_offset(db_offset)  # Sometimes the offset is not a number yet; fix it if needed
+            # For every time this hash was found in our query audio
             for t in hash_to_times.get(db_hash, []):
+                # Count how many times the same song has the same time "difference" (offset) as our recording
+                # If many hashes line up at the same offset, it's a strong match!
                 offset_counter[(song_id, db_offset - t)] += 1
 
+    # If we didn't find any matches, close the DB and return nothing
     if not offset_counter:
         conn.close()
         # Let the caller display info if needed
         return None, None
 
+    # Find the (song_id, offset) with the most matches (the "winner")
     (best_song_id, best_delta), match_count = offset_counter.most_common(1)[0]
+    
+    # Get the filename for the best matching song from the database
     c.execute("SELECT filename FROM songs WHERE id=?", (best_song_id,))
     row = c.fetchone()
     conn.close()
     t1 = time.perf_counter()
 
-    # Just return results; let caller handle UI
+    # If we found a result, return the song filename and the number of matches
     if row:
         # If caller wants, can access timing here
         return row[0], match_count
+    # If something went wrong, return nothing
     return None, None
 
 # === Caching for Spectrograms/Peaks ===
