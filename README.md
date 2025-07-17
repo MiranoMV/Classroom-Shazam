@@ -54,7 +54,7 @@ To test the app:
 # Finally, how to actually launch the app
 
 ### Option 1: Git (Recommended if you have Git installed)
-git clone https://github.com/MiranoMV/Classroom-Shazam.git
+git clone https://github.com/exomira/Classroom-Shazam.git
 cd classroom-shazam
 This creates a local copy of the whole repository on the computer.
 Open terminal in that folder (shift and right click, and click "Open in Terminal) paste text inside and run:
@@ -63,9 +63,8 @@ Open terminal in that folder (shift and right click, and click "Open in Terminal
 To stop the app: press `Ctrl + C`  
 To close the terminal: type `exit` and press Enter, or just close the window
 
-
 ### Option 2: If you don't have Git installed:
-1. Download the project ZIP: https://github.com/MiranoMV/Classroom-Shazam/archive/refs/heads/main.zip
+1. Download the project ZIP: https://github.com/exomira/Classroom-Shazam/archive/refs/heads/main.zip
 2. Extract the folder
 3. Open terminal in that folder (shift and right click, and click "Open in Terminal) paste text inside and run:
    `pip install -r requirements.txt`
