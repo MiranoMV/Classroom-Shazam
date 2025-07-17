@@ -6,4 +6,3 @@ pydub
 sounddevice
 matplotlib
 lyricsgenius
-python-dotenv
