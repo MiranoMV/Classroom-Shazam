@@ -80,14 +80,9 @@ To enable this feature:
 2. Click “Create an API Client”
 3. Fill out the form (you can use dummy values)
 4. Once your client is created, you'll see a Client Access Token
-5. Open New Notepad in the same folder as your app.py
-Paste this:
-`GENIUS_API_TOKEN=your_token_here` (Replace your_token_here with their Genius token (which they get from genius.com/api-clients)
-6. Click File > Save As
-7. In the Save as type, choose: All Files (*.*)
-8. Name the file:
-   .env
-9. Done! Now the app will find the .env file when it runs.
+5. Open songs_lyrics file in your Notepad in the same folder as your app.py, and change the GENIUS_TOKEN, "your_actual_genius_api_token_here", Variable with your actual Token.
+6. Click File > Save
+9. Done!
 
 If you don’t set up the token, the app will still work — but lyrics won’t appear.
 
