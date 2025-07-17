@@ -1,80 +1,97 @@
-🎵 Classroom Shazam – Local Audio Recognition App
-A Python/Streamlit web app for music recognition – identify a song by recording or uploading a sample. Features lyric fetching, spectrogram visualizations, and your own local music database.
+# 🎵 Classroom Shazam – Music Recognition App
 
-🚀 Features
-Record or upload audio to recognize songs
-Add songs to your local fingerprint database (MP3, WAV, FLAC…)
-Spectrogram and fingerprint visualizations
-Lyrics fetching from Genius.com
-Works offline and locally
-Lightweight, private, and fast
+This is a Shazam-like web app built with Python and Streamlit that identifies uploaded songs using audio fingerprinting.
 
-🛠️ Setup & Installation
+## 🚀 Features
+- Upload an audio file (`.mp3`, `.wav`, etc.)
+- The app computes a unique fingerprint of the song
+- It matches it against a local database of songs
+- Displays the song name and additional info like lyrics
 
-0. First of all Install VS Studio, Python, and Python extension in VS Studio
+## 🧰 Requirements
+Before running the app, make sure the following are installed on your system:
 
-1. Clone the repo, write this in your terminal:
-git clone https://github.com/YOUR-USERNAME/mini-shazam.git
-cd mini-shazam
+ 1. Install Python
+Go to: https://www.python.org/downloads/
+Click the yellow "Download Python X.X.X" button, download the latest python version
+Run the installer
+IMPORTANT: Check the box that says “Add Python to PATH”
+Click “Install Now”
+This installs Python and pip, which is used to install other tools.
 
+3. Install FFmpeg
+Required so the app can process .mp3 files.
+Download FFmpeg from here: https://www.gyan.dev/ffmpeg/builds/
+Choose: “ffmpeg-release-essentials.zip”
+Extract it (e.g., to C:\ffmpeg)
+Add C:\ffmpeg\bin to the system PATH:
+Click Windows icon and search for environment variables
+Click "Edit the system environment variables"
+In System Properties → Click “Environment Variables”
+Under "System variables" → Find Path → Click “Edit”
+Click “New” → Paste: C:\ffmpeg\bin
+Click OK
+Check if it works in the terminal:
+```
+ffmpeg -version
+exit
+```
 
-2. Create a virtual environment (optional, but recommended):
-python -m venv venv
-source venv/bin/activate    # On Linux/Mac
-venv\Scripts\activate       # On Windows
+### ⚠️ Important: This app starts with an empty song database.
+When you first launch the app, there are no songs stored or recognized yet.
 
-3. Install dependencies:
-pip install -r requirements.txt
+To test the app:
+1. Run it normally with streamlit run app.py
+2. Use the Upload a Song section in the browser
+3. Once you upload a song (e.g., song.mp3), the app will:
+4. Fingerprint it
+5. Add it to the local database
+6. Recognize it in future uploads
 
-If you get errors for pyaudio or sounddevice, see the Troubleshooting section.
-
-4. Create music_wavs, music_mp3s folders and upload desired songs
-
-▶️ Running the App
-Just run:
-streamlit run app.py
-
-This will open your browser at http://localhost:8501.
-On your laptop/PC: You can record using your built-in or external microphone, or upload a file.
-On your phone: Open your local server IP in your mobile browser on the same Wi-Fi, and use the upload function.
-
-
-📲 Mobile Use
-The Record button will use your browser/device’s microphone.
-To access from your phone, get your PC’s IP address (e.g., 192.168.1.123) and visit http://192.168.1.123:8501 in your phone’s browser (both must be on the same Wi-Fi).
-File uploads work from any device/browser.
-
-🎵 Adding Songs to Database
-Go to Add a song to your database in the app sidebar.
-Upload a file (MP3, WAV, etc.), enter a display name, and (optionally) a Spotify link.
-The app will convert and fingerprint the song when enter or the button is pressed.
-
-🔧 Troubleshooting
-If your microphone isn’t recognized, see platform-specific instructions in the Wiki or the “Issues” section.
-For large music libraries, more RAM may be needed. 
-For errors with sounddevice, ensure you have the proper OS-level drivers.
-
-📝 Project Structure
-app.py – Main Streamlit app.
-fingerprinting.py – Audio fingerprinting functions.
-build_database.py – Database building script.
-songs_db.py – Song info management.
-songs_lyrics.py – Lyrics fetching/cleaning.
-music_wavs/ – Your audio files.
-music_fingerprints.db – SQLite database (created after first run).
-
-📚 Credits
-Inspired by Shazam algorithm
-Lyrics from Genius.com
-Built with Streamlit, librosa, pydub, sounddevice, sqlite3.
-
-🙋 FAQ
-Can I run this on my phone?
-Yes! Use the upload feature from your phone’s browser. For recording, the browser will use your phone mic if accessed over Wi-Fi.
-Is my data private?
-100%. Everything runs locally, nothing is uploaded anywhere.
-Can I add more songs?
-Yes! You can add as many songs as your PC has memory for.
-Feel free to open an issue or discussion for help!
+🧪 So the very first song you upload becomes the "known" song the app can match later.
 
 
+# Finally, how to actually launch the app
+
+### Option 1: Git (Recommended if you have Git installed)
+git clone https://github.com/MiranoMV/Classroom-Shazam.git
+cd classroom-shazam
+This creates a local copy of the whole repository on the computer.
+Open terminal in that folder (shift and right click, and click "Open in Terminal) paste text inside and run:
+   `pip install -r requirements.txt`
+   `streamlit run app.py`
+To stop the app: press `Ctrl + C`  
+To close the terminal: type `exit` and press Enter, or just close the window
+
+
+### Option 2: If you don't have Git installed:
+1. Download the project ZIP: https://github.com/MiranoMV/Classroom-Shazam/archive/refs/heads/main.zip
+2. Extract the folder
+3. Open terminal in that folder (shift and right click, and click "Open in Terminal) paste text inside and run:
+   `pip install -r requirements.txt`
+   `streamlit run app.py`
+4. To stop the app: press `Ctrl + C`  
+5. To close the terminal: type `exit` and press Enter, or just close the window
+
+### 🎤 Genius API for Lyrics (Optional)
+This app can fetch song lyrics using the Genius API.
+To enable this feature:
+1. Go to https://genius.com/api-clients
+2. Click “Create an API Client”
+3. Fill out the form (you can use dummy values)
+4. Once your client is created, you'll see a Client Access Token
+5. Open New Notepad in the same folder as your app.py
+Paste this:
+`GENIUS_API_TOKEN=your_token_here` (Replace your_token_here with their Genius token (which they get from genius.com/api-clients)
+6. Click File > Save As
+7. In the Save as type, choose: All Files (*.*)
+8. Name the file:
+   .env
+9. Done! Now the app will find the .env file when it runs.
+
+If you don’t set up the token, the app will still work — but lyrics won’t appear.
+
+
+---
+
+Let me know if you need help with the setup, contact me on Github, and if a THWS Student, on BI2E 2025 Course on E-learning
