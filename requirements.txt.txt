@@ -1,0 +1,9 @@
+streamlit
+numpy
+scipy
+librosa
+pydub
+sounddevice
+matplotlib
+sqlite3  # built-in in Python
+lyricsgenius
